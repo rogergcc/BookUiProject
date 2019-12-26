@@ -38,4 +38,11 @@ dependencies {
     //glide lib
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+
+
+    implementation "io.reactivex.rxjava2:rxjava:2.2.7"
+
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+
+
 }

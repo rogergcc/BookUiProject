@@ -1,6 +1,9 @@
 package com.rogergcc.bookuiproject.recyclerview;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -37,6 +41,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.bookviewholder
 
     BookItemClickListener bookItemClickListener;
 
+    private boolean on_attach = true;
+    long DURATION_IN_FADE_ID = 400;
 
     public BookAdapter(List<Book> mdata, BookItemClickListener listener) {
         this.mdata = mdata;
@@ -81,12 +87,23 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.bookviewholder
 //        requestOptions.error(R.drawable.ic_error);
 
         //Images Url String
+
+//        RequestOptions requestOptions = new RequestOptions()
+//                .fitCenter()
+//                .placeholder(R.drawable.film_reel)
+//                .centerInside()
+//                .error(R.drawable.cinema_filled_error)
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .priority(Priority.HIGH)
+//                .dontAnimate()
+//                .dontTransform();
+
         Glide.with(holder.itemView.getContext())
                 .load(mdata.get(position).getImgUrl())
                 .transform(new CenterCrop(),new RoundedCorners(16))//i knowit's deprecated i will fix later
                 .into(holder.imgBook); //destination path
 
-
+        setAnimation(holder.itemView, position);
 //        Glide.with(holder.itemView.getContext())
 //                .load(mdata.get(position).getImgUrl())
 //                .transform(new CenterCrop(),new RoundedCorners(16))//i knowit's deprecated i will fix later
@@ -126,10 +143,46 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.bookviewholder
             }
         });
     }
-
+    @Override
+    public long getItemId(int position) {
+        //String product = mSelectedPosition.length();
+        return position;
+    }
     @Override
     public int getItemCount() {
         return mdata.size();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                Log.d(TAG, "onScrollStateChanged: Called " + newState);
+                on_attach = false;
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+
+    private void setAnimation(View itemView, int i) {
+        if (!on_attach) {
+            i = -1;
+        }
+        boolean isNotFirstItem = i == -1;
+        i++;
+        itemView.setAlpha(0.f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator animator = ObjectAnimator.ofFloat(itemView, "alpha", 0.f, 0.5f, 1.0f);
+        ObjectAnimator.ofFloat(itemView, "alpha", 0.f).start();
+        animator.setStartDelay(isNotFirstItem ? DURATION_IN_FADE_ID / 2 : (i * DURATION_IN_FADE_ID / 3));
+        animator.setDuration(500);
+        animatorSet.play(animator);
+        animator.start();
     }
 
     public class bookviewholder extends RecyclerView.ViewHolder{
@@ -159,5 +212,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.bookviewholder
 //            });
 
         }
+
     }
 }

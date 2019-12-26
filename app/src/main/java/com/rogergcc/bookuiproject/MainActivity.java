@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -33,12 +36,15 @@ import java.util.Random;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements BookItemClickListener {
     //other way https://mikescamell.com/shared-element-transitions-part-4-recyclerview/
     private RecyclerView rvBooks;
     private BookAdapter bookAdapter;
     private List<Book> mdata;
+    private ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,17 +52,109 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
 
         initViews();
         //initmdataBooks();
-        getBookByVolumens("developer","newest");
+//        getBookByVolumens("developer","newest");
 
-
+        new getBookByVolumensAsync().execute("developer","newest");
 
     }
 
     private void setupBookAdapter() {
         bookAdapter = new BookAdapter(mdata,this);
         rvBooks.setAdapter(bookAdapter);
+        bookAdapter.notifyDataSetChanged();
+        rvBooks.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
+//                    Toast.makeText(getApplicationContext(), "Last", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+        pd.dismiss();
     }
 
+    public class getBookByVolumensAsync extends AsyncTask<String,Integer,Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pd.setTitle("Obteniendo Registros");
+            pd.setMessage("Recibiendo Datos");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+
+            String vol =strings[0];
+            String orderby =strings[1];
+
+            Log.e("Entro",vol);
+            Log.e("Entro",orderby);
+
+//            String URLDURO ="http://"+ObtenerIp()+":1234/api/";
+//
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl(URLDURO)
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//            ApiService apiService =retrofit.create(ApiService.class);
+//            Call<List<MaquinasSinRegistro>> call =apiService.GetListMaquinaSinClienteBuscar(parameter);
+//
+//            call.enqueue(new Callback<List<MaquinasSinRegistro>>() {
+//                @Override
+//                public void onResponse(Call<List<MaquinasSinRegistro>> call, Response<List<MaquinasSinRegistro>> response) {
+//
+//                    usuarios =response.body();
+//                    adapter = new MaquinasSinRegistroAdapter(usuarios,MaquinasSinRegistroActivity.this);
+//                    recyclerView.setAdapter(adapter);
+//                    adapter.notifyDataSetChanged();
+//                    pd.dismiss();
+//                }
+//
+//                @Override
+//                public void onFailure(Call<List<MaquinasSinRegistro>> call, Throwable t) {
+//                    Toast.makeText(MaquinasSinRegistroActivity.this,"Error" +toString(),Toast.LENGTH_SHORT).show();
+//
+//                }
+//            });
+
+
+            Call<GBookRequest> mealsCall = Utils.getApi().getBookByVolumens(vol,orderby);
+            mealsCall.enqueue(new Callback<GBookRequest>() {
+                @Override
+                public void onResponse(@NonNull Call<GBookRequest> call, @NonNull Response<GBookRequest> response) {
+//                view.hideLoading();
+                    if (response.isSuccessful() && response.body() != null) {
+//                    view.setMeals(response.body().getMeals());
+                        mdataGoogleBooks(response.body().getItems());
+
+                    } else {
+//                    view.onErrorLoading(response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<GBookRequest> call, @NonNull Throwable t) {
+//                view.hideLoading();
+//                view.onErrorLoading(t.getLocalizedMessage());
+                pd.cancel();
+                }
+            });
+            return true;
+        }
+
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(getApplicationContext(),"Error Tarea Filanizada",Toast.LENGTH_SHORT).show();
+        }
+    }
     void getBookByVolumens(String vol,String orderby) {
 
 //        view.showLoading();
@@ -143,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
     }
 
     private void initViews() {
+        pd = new ProgressDialog(this);
         rvBooks = findViewById(R.id.rv_book);
         rvBooks.setLayoutManager(new LinearLayoutManager(this));
         rvBooks.setHasFixedSize(true);
