@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_card"
+    android:id="@+id/bottom_sheet"
+
+    app:behavior_peekHeight="200dp"
+    app:behavior_hideable="false"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    tools:showIn="@layout/activity_book_detail_scrolling"
+
+    tools:context=".BookDetailScrollingActivity">
+    <!--    com.google.android.material.bottomsheet.BottomSheetBehavior-->
+
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="30dp"
+        android:background="@drawable/bottom_card_indicator"
+        android:layout_height="5dp"
+
+        android:layout_gravity="center"
+
+        />
+
+    <TextView
+        android:id="@+id/item_book_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_detail"
+        android:text="I'm an Android Developer Father"
+        android:textSize="22dp"
+        android:gravity="center"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/item_book_author"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="by Roger"
+        android:gravity="center" />
+
+    <RatingBar
+        android:id="@+id/item_book_ratingbar"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:rating="3.5"
+        android:stepSize="0.5"
+        android:progressTint="@color/duskYellow" />
+
+
+    <TextView
+        android:id="@+id/item_book_desc_detail"
+        android:layout_marginTop="@dimen/text_margin"
+
+        android:lineSpacingMultiplier="1"
+        android:lineSpacingExtra="5dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_book_content"
+        android:gravity="center" />
+
+
+    <Button
+        android:visibility="gone"
+        android:layout_margin="10dp"
+        android:background="#000"
+        android:textColor="#fff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Action" />
+
+</LinearLayout>

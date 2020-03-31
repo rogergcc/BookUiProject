@@ -5,11 +5,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-     android:layout_height="match_parent"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
 <LinearLayout
 
@@ -126,8 +124,11 @@
             android:lineSpacingExtra="5dp"
 
 
-            android:text="If you are a database developer who wants to learn how to design and implement databases for application development using PostgreSQL, this is the book for you. Existing knowledge of basic database concepts and some programming experience is required"
+            android:text="@string/detail_book_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </ScrollView>
+
+
+    <include layout="@layout/persistent_bottom_sheet" />
 </LinearLayout>

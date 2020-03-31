@@ -11,7 +11,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BookDetailActivity"></activity>
+        <activity
+            android:name=".BookDetailSCrollBottomSheetActivity"
+            android:label="Book Detail Bottom Sheet"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".BookDetailScrollingActivity"
+            android:label="@string/title_activity_book_detail_scrolling"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.rogergcc.bookuiproject.MainActivity" />
+        </activity>
+        <activity android:name=".BookDetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
