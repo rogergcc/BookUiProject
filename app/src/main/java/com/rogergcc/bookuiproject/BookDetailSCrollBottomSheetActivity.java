@@ -2,6 +2,7 @@ package com.rogergcc.bookuiproject;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -11,17 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 public class BookDetailSCrollBottomSheetActivity extends AppCompatActivity {
 
 
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
+
 
     BottomSheetBehavior sheetBehavior;
     LinearLayout bottomSheet;
@@ -33,10 +32,14 @@ public class BookDetailSCrollBottomSheetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_book_detail_scroll_bottom_sheet);
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         iniViews();
         bottomSheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -71,40 +74,14 @@ public class BookDetailSCrollBottomSheetActivity extends AppCompatActivity {
         sheetBehavior.setFitToContents(false);
         sheetBehavior.setHalfExpandedRatio(0.65f);
 
-        mCollapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-        mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.collapsingToolbarLayoutTitleColor);
-        mCollapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.collapsingToolbarLayoutTitleColor);
+        //set init state
+//        sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
 
-        AppBarLayout appBarLayout = findViewById(R.id.app_bar);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = true;
-            int scrollRange = -1;
 
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle("Account");
-                    isShow = true;
-                } else if (isShow) {
-                    mCollapsingToolbarLayout.setTitle(" ");
-                    //carefull there should a space between double quote otherwise it wont work
-                    isShow = false;
-                }
-            }
-        });
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
     }
 
     void iniViews() {
@@ -117,12 +94,18 @@ public class BookDetailSCrollBottomSheetActivity extends AppCompatActivity {
 //        int imageResourceId = getIntent().getExtras().getInt("imgURL");
         String imageResourceId = getIntent().getExtras().getString("imgURL");
 
-//        bookImg = findViewById(R.id.item_book_img);
+
+        //        if (imageResourceId != null) {
+//            mCollapsingToolbarLayout.setBackgroundResource(Integer.parseInt(imageResourceId));
+//        }
+
+        bookImg = findViewById(R.id.imgv_bookdetail_bottomsheet);
 //
-//        Glide.with(this)
-//                .load(imageResourceId)
+        Glide.with(this)
+                .load(imageResourceId)
+                .apply(new RequestOptions().override(600, 200))
 //                .transform(new CenterCrop(),new RoundedCorners(16))//i knowit's deprecated i will fix later
-//                .into(bookImg);
+                .into(bookImg);
 
 //
 
@@ -137,12 +120,17 @@ public class BookDetailSCrollBottomSheetActivity extends AppCompatActivity {
         book_description.setText(bookDescription);
 
 
-        getSupportActionBar().setTitle(bookTitle);
-
         book_rating = findViewById(R.id.item_book_ratingbar);
         book_rating.setRating(bookRating);
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sheetBehavior != null)
+            sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
     }
 
     /**

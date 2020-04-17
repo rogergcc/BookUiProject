@@ -205,7 +205,10 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
 
             book.setImgUrl(gbookitem.getVolumeInfo().getImageLinks().getThumbnail());
 
-            String authors = TextUtils.join(",", gbookitem.getVolumeInfo().getAuthors());
+            String authors = "";
+            if (gbookitem.getVolumeInfo().getAuthors() != null) {
+                authors = TextUtils.join(",", gbookitem.getVolumeInfo().getAuthors());
+            }
             book.setAuthor(authors);
 
             book.setPages(gbookitem.getVolumeInfo().getPageCount());
@@ -268,9 +271,5 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
 
 
 
-        // i l make a simple test to see if the click works
-
-//        toast.maketext(this,"item clicked : " + book.gettitle(),toast.length_long).show();
-        // it works great
     }
 }

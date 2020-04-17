@@ -12,51 +12,63 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
+        android:fitsSystemWindows="true"
+
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_hero_image"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
-
-
-        >
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
+            android:fitsSystemWindows="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            android:background="@drawable/thevigitarian"
-            android:transitionName="sharedName"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            app:contentScrim="?attr/colorPrimary">
+
+            <ImageView
+                android:id="@+id/imgv_bookdetail_bottomsheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/thevigitarian"
+                android:transitionName="sharedName"
+
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax" />
+
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:layout_width="match_parent"
+                app:title="Book Details"
                 android:layout_height="?attr/actionBarSize"
+                android:layout_width="match_parent"
                 app:layout_collapseMode="pin"
-
-                app:titleTextColor="@color/cardview_dark_background"
-                app:title="Account"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!--    <LinearLayout-->
+    <!--        android:visibility="gone"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent">-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/imgv_bookdetail"-->
+    <!--            android:src="@drawable/thevigitarian"-->
+    <!--            android:transitionName="sharedName"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent">-->
+
+    <!--        </ImageView>-->
+
+    <!--    </LinearLayout>-->
 
     <!-- Adding bottom sheet after main content -->
     <include
 
         layout="@layout/bottom_sheet" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

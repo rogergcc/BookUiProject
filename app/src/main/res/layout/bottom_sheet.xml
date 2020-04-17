@@ -11,9 +11,9 @@
     app:behavior_peekHeight="200dp"
     app:behavior_hideable="false"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    tools:showIn="@layout/activity_book_detail_scrolling"
+    tools:showIn="@layout/activity_book_detail_scroll_bottom_sheet"
 
-    tools:context=".BookDetailScrollingActivity">
+    tools:context=".BookDetailSCrollBottomSheetActivity">
     <!--    com.google.android.material.bottomsheet.BottomSheetBehavior-->
 
     <RelativeLayout
