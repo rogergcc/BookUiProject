@@ -1,5 +1,7 @@
 package com.rogergcc.bookuiproject.model;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -340,9 +342,13 @@ public class GBookRequest {
         @Expose
         @SerializedName("language")
         private String language;
+
         @Expose
+        @Nullable
         @SerializedName("imageLinks")
+
         private ImageLinks imageLinks;
+
         @Expose
         @SerializedName("panelizationSummary")
         private PanelizationSummary panelizationSummary;
@@ -529,9 +535,14 @@ public class GBookRequest {
     }
 
     public static class ImageLinks {
+
+
         @Expose
         @SerializedName("thumbnail")
+        @Nullable //if uy want to check !=null way-
+        // but if u want check its empty not necesary shit
         private String thumbnail;
+
         @Expose
         @SerializedName("smallThumbnail")
         private String smallThumbnail;

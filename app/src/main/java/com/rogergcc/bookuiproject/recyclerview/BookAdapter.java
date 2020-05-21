@@ -2,8 +2,6 @@ package com.rogergcc.bookuiproject.recyclerview;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +10,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.rogergcc.bookuiproject.R;
 import com.rogergcc.bookuiproject.model.Book;
 
@@ -135,7 +124,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.bookviewholder
 
         //holder.ratingBar.setRating(4.5f);
 
-        ViewCompat.setTransitionName(holder.imgBook, mdata.get(position).getTitle());
+        //TODO FRAGMENT TRANSITIONS
+//        ViewCompat.setTransitionName(holder.imgBook, mdata.get(position).getTitle());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

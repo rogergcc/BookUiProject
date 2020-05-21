@@ -1,15 +1,6 @@
 package com.rogergcc.bookuiproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.util.Pair;
-import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ActivityOptions;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,14 +8,16 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.rogergcc.bookuiproject.api.Utils;
 import com.rogergcc.bookuiproject.model.Book;
-import com.rogergcc.bookuiproject.model.GBook;
 import com.rogergcc.bookuiproject.model.GBookRequest;
 import com.rogergcc.bookuiproject.recyclerview.BookAdapter;
 import com.rogergcc.bookuiproject.recyclerview.BookItemClickListener;
@@ -36,15 +29,15 @@ import java.util.Random;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements BookItemClickListener {
     //other way https://mikescamell.com/shared-element-transitions-part-4-recyclerview/
     private RecyclerView rvBooks;
     private BookAdapter bookAdapter;
     private List<Book> mdata;
-    private ProgressDialog pd;
+    private ProgressBar progressBar;
+
+    //    private ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
                 }
             }
         });
-        pd.dismiss();
+//        pd.dismiss();
+        progressBar.setVisibility(View.GONE);
     }
 
     public class getBookByVolumensAsync extends AsyncTask<String,Integer,Boolean> {
@@ -81,10 +75,11 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pd.setTitle("Obteniendo Registros");
-            pd.setMessage("Recibiendo Datos");
-            pd.setCancelable(false);
-            pd.show();
+//            pd.setTitle("Obteniendo Registros");
+//            pd.setMessage("Recibiendo Datos");
+//            pd.setCancelable(false);
+//            pd.show();
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -142,7 +137,8 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
                 public void onFailure(@NonNull Call<GBookRequest> call, @NonNull Throwable t) {
 //                view.hideLoading();
 //                view.onErrorLoading(t.getLocalizedMessage());
-                pd.cancel();
+//                pd.cancel();
+                    progressBar.setVisibility(View.GONE);
                 }
             });
             return true;
@@ -205,12 +201,23 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
             int randomreview = (int )(Math.random() * 90 + 1);
             float  randomrating = (float )(Math.random() * 5 + 1);
 
-            book.setTitle(gbookitem.getVolumeInfo().getTitle());
 
-            book.setImgUrl(gbookitem.getVolumeInfo().getImageLinks().getThumbnail());
+            if (gbookitem.getVolumeInfo().getTitle() != null) {
+                book.setTitle(gbookitem.getVolumeInfo().getTitle());
+            }
 
-            String authors = TextUtils.join(",", gbookitem.getVolumeInfo().getAuthors());
+            // And this for each property fucking shits nulls
+            //This cause imageLinks even exits
+            if (gbookitem.getVolumeInfo().getImageLinks() != null) {
+                book.setImgUrl(gbookitem.getVolumeInfo().getImageLinks().getThumbnail());
+            }
+
+            String authors = "";
+            if (gbookitem.getVolumeInfo().getAuthors() != null) {
+                authors = TextUtils.join(",", gbookitem.getVolumeInfo().getAuthors());
+            }
             book.setAuthor(authors);
+
 
             book.setPages(gbookitem.getVolumeInfo().getPageCount());
             book.setReview(randomreview);
@@ -241,8 +248,10 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
     }
 
     private void initViews() {
-        pd = new ProgressDialog(this);
+//        pd = new ProgressDialog(this);
         rvBooks = findViewById(R.id.rv_book);
+
+        progressBar = findViewById(R.id.progressBar);
         rvBooks.setLayoutManager(new LinearLayoutManager(this));
         rvBooks.setHasFixedSize(true);
     }
@@ -253,7 +262,9 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
         // here we send movie information to detail activity
         // also we ll create the transition animation between the two activity
 
-        Intent intent = new Intent(this,BookDetailActivity.class);
+//        Intent intent = new Intent(this,BookDetailActivity.class);
+//        Intent intent = new Intent(this,BookDetailSCrollBottomSheetActivity.class);
+        Intent intent = new Intent(this, BookDetailScrollingActivity.class);
         // send movie information to deatilActivity
         intent.putExtra("title",book.getTitle());
         intent.putExtra("imgURL",book.getImgUrl());
@@ -268,9 +279,5 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
 
 
 
-        // i l make a simple test to see if the click works
-
-        Toast.makeText(this,"item clicked : " + book.getTitle(),Toast.LENGTH_LONG).show();
-        // it works great
     }
 }
