@@ -201,15 +201,23 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
             int randomreview = (int )(Math.random() * 90 + 1);
             float  randomrating = (float )(Math.random() * 5 + 1);
 
-            book.setTitle(gbookitem.getVolumeInfo().getTitle());
 
-            book.setImgUrl(gbookitem.getVolumeInfo().getImageLinks().getThumbnail());
+            if (gbookitem.getVolumeInfo().getTitle() != null) {
+                book.setTitle(gbookitem.getVolumeInfo().getTitle());
+            }
+
+            // And this for each property fucking shits nulls
+            //This cause imageLinks even exits
+            if (gbookitem.getVolumeInfo().getImageLinks() != null) {
+                book.setImgUrl(gbookitem.getVolumeInfo().getImageLinks().getThumbnail());
+            }
 
             String authors = "";
             if (gbookitem.getVolumeInfo().getAuthors() != null) {
                 authors = TextUtils.join(",", gbookitem.getVolumeInfo().getAuthors());
             }
             book.setAuthor(authors);
+
 
             book.setPages(gbookitem.getVolumeInfo().getPageCount());
             book.setReview(randomreview);
