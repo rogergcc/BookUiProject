@@ -37,6 +37,17 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
     private List<Book> mdata;
     private ProgressBar progressBar;
 
+    public static double getRandom(double min, double max) {
+        return (Math.random() * (max + 1 - min)) + min;
+    }
+
+    public static int nextInt(int min, int max) {
+        Random random = new Random();
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        return random.nextInt((max - min) + 1) + min;
+    }
+
     //    private ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +58,12 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
         //initmdataBooks();
 //        getBookByVolumens("developer","newest");
 
-        new getBookByVolumensAsync().execute("developer","newest");
+        new getBookByVolumensAsync().execute("developer", "newest");
 
     }
 
     private void setupBookAdapter() {
-        bookAdapter = new BookAdapter(mdata,this);
+        bookAdapter = new BookAdapter(mdata, this);
         rvBooks.setAdapter(bookAdapter);
         bookAdapter.notifyDataSetChanged();
         rvBooks.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -60,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
 //                    Toast.makeText(getApplicationContext(), "Last", Toast.LENGTH_SHORT).show();
 
                 }
@@ -70,98 +81,17 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
         progressBar.setVisibility(View.GONE);
     }
 
-    public class getBookByVolumensAsync extends AsyncTask<String,Integer,Boolean> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-//            pd.setTitle("Obteniendo Registros");
-//            pd.setMessage("Recibiendo Datos");
-//            pd.setCancelable(false);
-//            pd.show();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-
-            String vol =strings[0];
-            String orderby =strings[1];
-
-            Log.e("Entro",vol);
-            Log.e("Entro",orderby);
-
-//            String URLDURO ="http://"+ObtenerIp()+":1234/api/";
-//
-//            Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl(URLDURO)
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build();
-//            ApiService apiService =retrofit.create(ApiService.class);
-//            Call<List<MaquinasSinRegistro>> call =apiService.GetListMaquinaSinClienteBuscar(parameter);
-//
-//            call.enqueue(new Callback<List<MaquinasSinRegistro>>() {
-//                @Override
-//                public void onResponse(Call<List<MaquinasSinRegistro>> call, Response<List<MaquinasSinRegistro>> response) {
-//
-//                    usuarios =response.body();
-//                    adapter = new MaquinasSinRegistroAdapter(usuarios,MaquinasSinRegistroActivity.this);
-//                    recyclerView.setAdapter(adapter);
-//                    adapter.notifyDataSetChanged();
-//                    pd.dismiss();
-//                }
-//
-//                @Override
-//                public void onFailure(Call<List<MaquinasSinRegistro>> call, Throwable t) {
-//                    Toast.makeText(MaquinasSinRegistroActivity.this,"Error" +toString(),Toast.LENGTH_SHORT).show();
-//
-//                }
-//            });
-
-
-            Call<GBookRequest> mealsCall = Utils.getApi().getBookByVolumens(vol,orderby);
-            mealsCall.enqueue(new Callback<GBookRequest>() {
-                @Override
-                public void onResponse(@NonNull Call<GBookRequest> call, @NonNull Response<GBookRequest> response) {
-//                view.hideLoading();
-                    if (response.isSuccessful() && response.body() != null) {
-//                    view.setMeals(response.body().getMeals());
-                        mdataGoogleBooks(response.body().getItems());
-
-                    } else {
-//                    view.onErrorLoading(response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<GBookRequest> call, @NonNull Throwable t) {
-//                view.hideLoading();
-//                view.onErrorLoading(t.getLocalizedMessage());
-//                pd.cancel();
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
-            return true;
-        }
-
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            Toast.makeText(getApplicationContext(),"Error Tarea Filanizada",Toast.LENGTH_SHORT).show();
-        }
-    }
-    void getBookByVolumens(String vol,String orderby) {
+    void getBookByVolumens(String vol, String orderby) {
 
 //        view.showLoading();
-        Call<GBookRequest> mealsCall = Utils.getApi().getBookByVolumens(vol,orderby);
+        Call<GBookRequest> mealsCall = Utils.getApi().getBookByVolumens(vol, orderby);
         mealsCall.enqueue(new Callback<GBookRequest>() {
             @Override
-            public void onResponse(@NonNull Call<GBookRequest> call,@NonNull Response<GBookRequest> response) {
+            public void onResponse(@NonNull Call<GBookRequest> call, @NonNull Response<GBookRequest> response) {
 //                view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
 //                    view.setMeals(response.body().getMeals());
-                   mdataGoogleBooks(response.body().getItems());
+                    mdataGoogleBooks(response.body().getItems());
 
                 } else {
 //                    view.onErrorLoading(response.message());
@@ -169,22 +99,12 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
             }
 
             @Override
-            public void onFailure(@NonNull Call<GBookRequest> call,@NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GBookRequest> call, @NonNull Throwable t) {
 //                view.hideLoading();
 //                view.onErrorLoading(t.getLocalizedMessage());
             }
         });
 
-    }
-    public static double getRandom(double min, double max) {
-        return (Math.random() * (max + 1 - min)) + min;
-    }
-
-    public static int nextInt(int min, int max) {
-         Random random = new Random();
-        // nextInt is normally exclusive of the top value,
-        // so add 1 to make it inclusive
-        return random.nextInt((max - min) + 1) + min;
     }
 
     private void mdataGoogleBooks(List<GBookRequest.Items> gBooksRequest) {
@@ -196,10 +116,10 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
             Book book = new Book();
             GBookRequest.Items gbookitem = gBooksRequest.get(i);
 
-            int random= new Random().nextInt(5)+1;
+            int random = new Random().nextInt(5) + 1;
 
-            int randomreview = (int )(Math.random() * 90 + 1);
-            float  randomrating = (float )(Math.random() * 5 + 1);
+            int randomreview = (int) (Math.random() * 90 + 1);
+            float randomrating = (float) (Math.random() * 5 + 1);
 
 
             if (gbookitem.getVolumeInfo().getTitle() != null) {
@@ -237,12 +157,12 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
         //for tesing purpos im creting randon set of books
         //u may get yr data from web services or firebase
         mdata = new ArrayList<>();
-        mdata.add(new Book("He dies with his eyes open","lorem titulo 1asffasf.","Derek Raymond","",520,42,4.3f,R.drawable.hediedwith));
-        mdata.add(new Book("Where you go bernabette","lorem titulo 1asffasf.","Maria Simple","",500,32,4.1f,R.drawable.mariasemples));
-        mdata.add(new Book("Privacy","lorem titulo 1asffasf999.","Geret feiker","",420,35,5.0f,R.drawable.privacy));
-        mdata.add(new Book("The Martian","lorem titulo 1asffasf8888.","Andy Weir","",320,22,4.0f,R.drawable.themartian));
-        mdata.add(new Book("The Vegetarian","lorem titulo 1asffasf4455.","Han Kan","",660,25,4.5f,R.drawable.thevigitarian));
-        mdata.add(new Book("The Wild Robot","lorem titulo 1asffa123123.","Peter Brown","",360,72,3.3f,R.drawable.thewildrobot));
+        mdata.add(new Book("He dies with his eyes open", "lorem titulo 1asffasf.", "Derek Raymond", "", 520, 42, 4.3f, R.drawable.hediedwith));
+        mdata.add(new Book("Where you go bernabette", "lorem titulo 1asffasf.", "Maria Simple", "", 500, 32, 4.1f, R.drawable.mariasemples));
+        mdata.add(new Book("Privacy", "lorem titulo 1asffasf999.", "Geret feiker", "", 420, 35, 5.0f, R.drawable.privacy));
+        mdata.add(new Book("The Martian", "lorem titulo 1asffasf8888.", "Andy Weir", "", 320, 22, 4.0f, R.drawable.themartian));
+        mdata.add(new Book("The Vegetarian", "lorem titulo 1asffasf4455.", "Han Kan", "", 660, 25, 4.5f, R.drawable.thevigitarian));
+        mdata.add(new Book("The Wild Robot", "lorem titulo 1asffa123123.", "Peter Brown", "", 360, 72, 3.3f, R.drawable.thewildrobot));
 
 
     }
@@ -266,18 +186,99 @@ public class MainActivity extends AppCompatActivity implements BookItemClickList
 //        Intent intent = new Intent(this,BookDetailSCrollBottomSheetActivity.class);
         Intent intent = new Intent(this, BookDetailScrollingActivity.class);
         // send movie information to deatilActivity
-        intent.putExtra("title",book.getTitle());
-        intent.putExtra("imgURL",book.getImgUrl());
-        intent.putExtra("imgAuthor",book.getAuthor());
-        intent.putExtra("imgDescrition",book.getDescription());
-        intent.putExtra("imgRating",book.getRating());
+        intent.putExtra("title", book.getTitle());
+        intent.putExtra("imgURL", book.getImgUrl());
+        intent.putExtra("imgAuthor", book.getAuthor());
+        intent.putExtra("imgDescrition", book.getDescription());
+        intent.putExtra("imgRating", book.getRating());
         // lets crezte the animation
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,
-                bookImageView,"sharedName");
+                bookImageView, "sharedName");
 //
-        startActivity(intent,options.toBundle());
+        startActivity(intent, options.toBundle());
 
 
+    }
 
+    public class getBookByVolumensAsync extends AsyncTask<String, Integer, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+//            pd.setTitle("Obteniendo Registros");
+//            pd.setMessage("Recibiendo Datos");
+//            pd.setCancelable(false);
+//            pd.show();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+
+            String vol = strings[0];
+            String orderby = strings[1];
+
+            Log.e("Entro", vol);
+            Log.e("Entro", orderby);
+
+//            String URLDURO ="http://"+ObtenerIp()+":1234/api/";
+//
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl(URLDURO)
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//            ApiService apiService =retrofit.create(ApiService.class);
+//            Call<List<MaquinasSinRegistro>> call =apiService.GetListMaquinaSinClienteBuscar(parameter);
+//
+//            call.enqueue(new Callback<List<MaquinasSinRegistro>>() {
+//                @Override
+//                public void onResponse(Call<List<MaquinasSinRegistro>> call, Response<List<MaquinasSinRegistro>> response) {
+//
+//                    usuarios =response.body();
+//                    adapter = new MaquinasSinRegistroAdapter(usuarios,MaquinasSinRegistroActivity.this);
+//                    recyclerView.setAdapter(adapter);
+//                    adapter.notifyDataSetChanged();
+//                    pd.dismiss();
+//                }
+//
+//                @Override
+//                public void onFailure(Call<List<MaquinasSinRegistro>> call, Throwable t) {
+//                    Toast.makeText(MaquinasSinRegistroActivity.this,"Error" +toString(),Toast.LENGTH_SHORT).show();
+//
+//                }
+//            });
+
+
+            Call<GBookRequest> mealsCall = Utils.getApi().getBookByVolumens(vol, orderby);
+            mealsCall.enqueue(new Callback<GBookRequest>() {
+                @Override
+                public void onResponse(@NonNull Call<GBookRequest> call, @NonNull Response<GBookRequest> response) {
+//                view.hideLoading();
+                    if (response.isSuccessful() && response.body() != null) {
+//                    view.setMeals(response.body().getMeals());
+                        mdataGoogleBooks(response.body().getItems());
+
+                    } else {
+//                    view.onErrorLoading(response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<GBookRequest> call, @NonNull Throwable t) {
+//                view.hideLoading();
+//                view.onErrorLoading(t.getLocalizedMessage());
+//                pd.cancel();
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+            return true;
+        }
+
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(getApplicationContext(), "Error Tarea Filanizada", Toast.LENGTH_SHORT).show();
+        }
     }
 }
